@@ -1,0 +1,58 @@
+{
+  "name": "All-Seeing I",
+  "description": "A friendly digital assistant who watches over you and helps you protecting your personal data from big companies and goverments",
+  "version": "1.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js"
+  },
+ 
+  "web_accessible_resources":  [
+    {
+      "resources": [
+        "/images/get_started128.png",
+        "/images/eyelogo_96.png",
+        "/images/eyeouter.png",
+        "/images/eyewhite.png",
+        "/images/eyepupil.png",
+        "/images/giphy.gif",
+        "/images/mehoofd.png",
+        "page.html"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "css": [
+        "main.css"
+      ],
+      "js": [
+        "p5.min.js",
+        "p5.sound.min.js",
+        "p5.speech.js",
+        "script.js"
+      ]
+    }
+  ],
+  "permissions": ["storage", "activeTab", "scripting", "webNavigation"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "/images/eyelogo_96.png",
+      "32": "/images/eyelogo_96.png",
+      "48": "/images/eyelogo_96.png",
+      "128": "/images/eyelogo_96.png"
+    }
+  },
+  "icons": {
+    "16": "/images/eyelogo_96.png",
+    "32": "/images/eyelogo_96.png",
+    "48": "/images/eyelogo_96.png",
+    "128": "/images/eyelogo_96.png"
+  },
+  "options_page": "options.html"
+}

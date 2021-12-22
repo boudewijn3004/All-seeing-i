@@ -50,8 +50,8 @@ window.addEventListener('load', function () {
     
       mouseElement.style.width = "270px";
       mouseElement.style.height = "200px";
-      mouseElement.style.bottom = "100px";
-      mouseElement.style.right = "150px";
+      mouseElement.style.bottom = "20px";
+      mouseElement.style.right = "50px";
       // mouseElement.style.backgroundColor =  "red";
       mouseElement.style.position =  "fixed";
       mouseElement.style.display =  "block";
@@ -292,8 +292,153 @@ console.log(pagePath);
 fetch(pagePath)
   .then(data => data.text())
   .then(html =>  {
-    console.log(html)
+    // console.log(html)
     popupElementContent.innerHTML = html;
+
+    popupContentLoaded();
   });
 
 // console.log('einde')
+
+
+let securityFeatures = {};
+
+let myStorage = window.localStorage;
+let storageFeatures;
+let featureTogglers
+// facebook like click
+function popupContentLoaded() {
+  // localStorage.clear();
+  console.log(localStorage.securityFeatures);
+
+
+  console.dir(myStorage);
+
+  featureTogglers = document.querySelectorAll(".feature-toggle");
+  featureTogglers.forEach(featureToggler => {
+    let featureKey = featureToggler.dataset.feature;
+    console.log("feature key" + featureKey)
+    console.log(storageFeatures);
+    storageFeatures = localStorage.getItem("securityFeatures");
+    storageFeatures = JSON.parse(storageFeatures);
+    if (storageFeatures == undefined) {
+      let tempFeatures = {};
+       tempFeatures = JSON.stringify(tempFeatures);
+      localStorage.setItem("securityFeatures",tempFeatures);
+      storageFeatures = localStorage.getItem("securityFeatures");
+      storageFeatures = JSON.parse(storageFeatures);
+      securityFeatures[featureKey] = false;
+      tempFeatures = JSON.stringify(securityFeatures);
+      localStorage.setItem("securityFeatures",tempFeatures);
+    } 
+    else if (storageFeatures[featureKey] == undefined) {
+      securityFeatures[featureKey] = false;
+      let tempFeatures = JSON.stringify(securityFeatures);
+      localStorage.setItem("securityFeatures",tempFeatures);
+    }
+    
+
+    featureToggler.addEventListener("click", () => {
+      // let disabledtext = 
+    //  console.log(featureToggler.children);
+      if (featureToggler.classList.contains("disabled")) {
+        featureToggler.classList.remove("disabled")
+        featureToggler.classList.add("enabled")
+        featureToggler.children[0].classList.remove("show");
+        featureToggler.children[1].classList.add("show");
+        securityFeatures[featureKey] = true;
+        let tempFeatures = JSON.stringify(securityFeatures);
+        console.log("temp Features: " + tempFeatures);
+        localStorage.setItem("securityFeatures", tempFeatures);
+
+      }
+    
+      else if (featureToggler.classList.contains("enabled")) {
+        featureToggler.classList.remove("enabled")
+        featureToggler.classList.add("disabled")
+        featureToggler.children[1].classList.remove("show");
+        featureToggler.children[0].classList.add("show");
+        securityFeatures[featureKey] = false;
+        let tempFeatures = JSON.stringify(securityFeatures);
+        console.log("temp Features: " + tempFeatures);
+        localStorage.setItem("securityFeatures",tempFeatures);
+
+      }
+      
+      if ( featureKey == "displayCookies") {
+          console.log(document.cookie);
+          console.log(window.sessionStorage);
+      }
+
+    })
+    
+  })
+
+  // console.log( storageFeatures)
+  loadLocalStorage();
+}
+
+function loadLocalStorage() {
+  console.log(localStorage);
+  storageFeatures = localStorage.getItem("securityFeatures");
+  storageFeatures = JSON.parse(storageFeatures);
+  securityFeatures = storageFeatures;
+  featureTogglers.forEach(featureToggler => {
+    let feature = featureToggler.dataset.feature;
+    console.log(securityFeatures);
+    // for each feature 
+    // localStorage
+    if (storageFeatures[feature] == true) {
+      featureToggler.classList.remove("disabled")
+      featureToggler.classList.add("enabled")
+      featureToggler.children[0].classList.remove("show");
+      featureToggler.children[1].classList.add("show");
+
+    }
+
+    if (storageFeatures[feature] == false) {
+      featureToggler.classList.remove("enabled")
+      featureToggler.classList.add("disabled")
+      featureToggler.children[1].classList.remove("show");
+      featureToggler.children[0].classList.add("show");
+
+
+    }
+  })
+  localStorage.setItem("securityFeatures",JSON.stringify(securityFeatures));
+  // features on scroll
+  document.addEventListener("scroll", facebookLike);
+  document.addEventListener("mousemove", youtubeLike);
+}
+
+
+// let fbAutoLike = false;
+
+
+function facebookLike() {
+  let likeButtons = document.querySelectorAll("div[aria-label=Leuk]");
+   
+  if (Object.keys(securityFeatures) !== 0) {
+    if (securityFeatures.fbAutoLiker) {
+      likeButtons.forEach(likeButton => {
+        likeButton.click();
+       })
+    }
+  }
+}
+
+function youtubeLike() {
+  let likeButton = document.querySelectorAll('.top-level-buttons #button[aria-pressed="false"]')
+  if (Object.keys(securityFeatures) !== 0) {
+    console.dir(likeButton)
+    if (securityFeatures.ytAutoLiker) {
+      console.dir(likeButton[0].ariaPressed)
+      let ranIndex = Math.round(Math.random(0,1));
+      console.log(ranIndex);
+      if (likeButton[0].ariaPressed == "false" && likeButton[1].ariaPressed == "false") {
+        likeButton[ranIndex].click();
+      }
+    }
+  }
+}
+
